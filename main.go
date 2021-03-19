@@ -1,8 +1,8 @@
 package main
 
 import (
-	"net/http"
 	"gee"
+	"net/http"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 			"password": c.PostForm("password"),
 		})
 	}
-	result.GET("/login", test3)
+	result.POST("/login", test3)
 
 	result.Run(":9999")
 }

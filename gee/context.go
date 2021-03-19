@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 )
+
 /*
    抽象出上下文，包含writer，req，path，method，statuscode等信息
    作为处理的整个流程的处理件
@@ -16,10 +17,10 @@ type H map[string]interface{}
 type Context struct {
 	// 来源数据
 	Writer http.ResponseWriter
-	Req *http.Request
+	Req    *http.Request
 
 	// 请求信息
-	Path string
+	Path   string
 	Method string
 
 	// 回复信息
@@ -28,10 +29,10 @@ type Context struct {
 
 // 构造上下文
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
-	return &Context {
+	return &Context{
 		Writer: w,
-		Req: req,
-		Path: req.URL.Path,
+		Req:    req,
+		Path:   req.URL.Path,
 		Method: req.Method,
 	}
 }
@@ -68,7 +69,7 @@ func (c *Context) String(code int, format string, values ...interface{}) {
 func (c *Context) JSON(code int, obj interface{}) {
 	c.SetHeader("Content-Type", "application/json")
 	c.Status(code)
-	encoder := json.NewEncoder(c.Writer) // 通过c.Writer构造json encode
+	encoder := json.NewEncoder(c.Writer)        // 通过c.Writer构造json encode
 	if err := encoder.Encode(obj); err != nil { // 将obj接口转换json后写入c.Writer
 		http.Error(c.Writer, err.Error(), 500)
 	}
