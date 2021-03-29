@@ -6,24 +6,18 @@ import (
 )
 
 func main() {
-	result := gee.New()
-
-	// 把方法写入路由
-	test1 := func(c *gee.Context) {
-		c.HTML(http.StatusOK, "<h1>Hello Gee</h1>")
-	}
-	result.GET("/", test1)
-	test2 := func(c *gee.Context) {
+	r := gee.New()
+	r.GET("/hello", func(c *gee.Context) {
+		// expect /hello?name=geektutu
 		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
-	}
-	result.GET("/hello", test2)
-	test3 := func(c *gee.Context) {
-		c.JSON(http.StatusOK, gee.H{
-			"username": c.PostForm("username"),
-			"password": c.PostForm("password"),
-		})
-	}
-	result.POST("/login", test3)
+	})
+	r.GET("/hello/:name", func(c *gee.Context) {
+		// expect /hello/geektutu
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
+	})
+	r.GET("/assets/*filepath", func(c *gee.Context) {
+		c.JSON(http.StatusOK, gee.H{"filepath": c.Param("filepath")})
+	})
 
-	result.Run(":9999")
+	r.Run(":9999")
 }
